@@ -46,7 +46,7 @@ service netdata start
 > Le monitoring est maintenant disponible sur ```http://localhost:19999```
 
 
-![netdata.png](/home/jugu/Documents/Documentation/img/netdata.png)
+![netdata.png](../img/netdata.png)
 
 
 **TODO** Script d'installation pour Debian
