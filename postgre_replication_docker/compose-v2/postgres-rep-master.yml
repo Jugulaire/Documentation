@@ -1,0 +1,14 @@
+version: '2'
+services:
+        myapplication-postgresql:
+                image: sameersbn/postgresql:9.6-2
+                volumes:
+                        - ~/psql-data:/var/lib/postgresql
+                environment:
+                        - DB_USER=dbuser
+                        - DB_PASS=dbuserpass
+                        - DB_NAME=dbname
+                        - REPLICATION_USER=repluser
+                        - REPLICATION_PASS=repluserpass
+                ports:
+                        - 5432:5432
