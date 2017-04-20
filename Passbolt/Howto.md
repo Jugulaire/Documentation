@@ -6,23 +6,22 @@
 2. Installation de php-fpm
 3. Installation de mysql
 4. Mise en place de TLS
-5. Installation de passbolt
+5. Mise en place pretty URL (cake php)
+6. Installation de passbolt
 
-### Installation serveur web :
-
-1. Nginx
+### Installation Nginx :
 
 ```bash 
 #As root
 apt update && apt install nginx
 ```
 
-2. php
+###Installation de PHP
 ```bash
 apt install php5-fpm php5-imagicki php5-gnupg php5-memcachedi php5-gd php5-mysql
 ```
 
-3. Mysql 
+### installation de mySQL
 
 ```bash
 # Installation mysql 
@@ -41,12 +40,12 @@ GRANT ALL PRIVILEGES ON  passbolt. * TO 'passbolt'@'localhost';
 GRANT ALL PRIVILEGES ON test_passbolt. * TO 'passbolt'@'localhost';
 ```
 
-4. TLS :
+### Mise en place de HTTPS (TLS)
 
 > Note : Ici on génére un certificat autosigné pour nos tests !
 > Dans un cadre de production on utilisera let's encrypt.
 
-Création d'un certificats (une commande) :
+#### Création d'un certificats (une commande) :
 
 ```bash
 #Création du certificat
@@ -56,7 +55,7 @@ mkdir /etc/nginx/ssl
 mv cert.pem /etc/nginx/ssl
 mv key.pem /etc/nginx/ssl
 ```
-Paramétrage de Nginx :
+#### Paramétrage de Nginx :
 
 ```nginx
 #On active SSL ipv4 et ipv6
@@ -67,16 +66,42 @@ ssl_certificate /etc/nginx/ssl/cert.pem;
 ssl_certificate_key /etc/nginx/key.pem;
 ```
 
-## Activation de pretty URL :
+### Activation de pretty URL :
+
+Voici a quoi doit ressembler votre configuration :
+
+```nginx
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+	listen 443 ssl default_server;
+	listen [::]:443 ssl default_server;
+
+	ssl_certificate /etc/nginx/ssl/cert.pem;
+        ssl_certificate_key /etc/nginx/ssl/key.pem;
+	root /var/www/html/passbolt/app/webroot/;
+	index index.php;
+	server_name passbolt.local;
+
+	location / {
+        try_files $uri $uri/ /index.php?$args;
+	}
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		fastcgi_pass unix:/var/run/php5-fpm.sock;
+	}
+}
+
+```
 
 ## Installation de passbolt :
 
 Etapes :
 - Installation de l'APP
 - Création d'une clé GPG 
-- Export de la clé
+- Export de la clé dans l'app
 - Parametrage 
-- premier démarrage
+- Premier démarrage
 
 ### Installation de l'app :
 
@@ -149,7 +174,7 @@ On va changer le fingerprint de notre clé pour correspondre a celui de notre cl
 gpg --with-fingerprint app/Config/gpg/public.key
 ```
 ## Lacement de passbolt :
-i
+
 On lance passbolt en tant que www-data pour être bien sur que les droits sont bie nconfiguré :
 ```bash
 su -s /bin/bash -c "app/Console/cake install --no-admin" www-data

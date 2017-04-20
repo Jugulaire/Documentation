@@ -31,3 +31,103 @@ Un éditeur semi graphique apparait :
 9. Faut-il autoriser le protocole LDAPv2 ? : **NON (pas sécurisé)**
 
 ## Installation de PHPLDAPadmin : 
+
+Via les dépots Debian :
+
+```bash
+apt-get install phpldapadmin
+```
+Ensuite on va modifier deux ou trois parametres :
+Pour être bien certqins de ces derniers on va utiliser slapcat :
+```haskell
+➜  jugu slapcat              
+dn: dc=nodomain
+objectClass: top
+objectClass: dcObject
+objectClass: organization
+o: nodomain
+dc: nodomain
+structuralObjectClass: organization
+entryUUID: 733e5366-b9f9-1036-9516-bdbe2a12a29e
+creatorsName: cn=admin,dc=nodomain
+createTimestamp: 20170420094244Z
+entryCSN: 20170420094244.883489Z#000000#000#000000
+modifiersName: cn=admin,dc=nodomain
+modifyTimestamp: 20170420094244Z
+
+dn: cn=admin,dc=nodomain
+objectClass: simpleSecurityObject
+objectClass: organizationalRole
+cn: admin
+description: LDAP administrator
+userPassword:: e1NTSEF9YW5iTEVkcVlzYmw5ZGNQMkJ5bXY0Q3AxbS80WmlQKzE=
+structuralObjectClass: organizationalRole
+entryUUID: 735839ca-b9f9-1036-9517-bdbe2a12a29e
+creatorsName: cn=admin,dc=nodomain
+createTimestamp: 20170420094245Z
+entryCSN: 20170420094245.053224Z#000000#000#000000
+modifiersName: cn=admin,dc=nodomain
+modifyTimestamp: 20170420094245Z
+➜  jugu slapcat              
+dn: dc=nodomain
+objectClass: top
+objectClass: dcObject
+objectClass: organization
+o: nodomain
+dc: nodomain
+structuralObjectClass: organization
+entryUUID: 733e5366-b9f9-1036-9516-bdbe2a12a29e
+creatorsName: cn=admin,dc=nodomain
+createTimestamp: 20170420094244Z
+entryCSN: 20170420094244.883489Z#000000#000#000000
+modifiersName: cn=admin,dc=nodomain
+modifyTimestamp: 20170420094244Z
+
+dn: cn=admin,dc=nodomain
+objectClass: simpleSecurityObject
+objectClass: organizationalRole
+cn: admin
+description: LDAP administrator
+userPassword:: e1NTSEF9YW5iTEVkcVlzYmw5ZGNQMkJ5bXY0Q3AxbS80WmlQKzE=
+structuralObjectClass: organizationalRole
+entryUUID: 735839ca-b9f9-1036-9517-bdbe2a12a29e
+creatorsName: cn=admin,dc=nodomain
+createTimestamp: 20170420094245Z
+entryCSN: 20170420094245.053224Z#000000#000#000000
+modifiersName: cn=admin,dc=nodomain
+modifyTimestamp: 20170420094245Z
+
+```
+Cette commande va nous fournir des information primordiales sur la configuration que l'on a déja mise en place. 
+éditons donc ces parametres :
+``vi /etc/phpldapadmin/config.php``
+```php
+[1]
+$servers->setValue('server','host','domain_name_or_IP_address');
+[2]
+$servers->setValue('server','base',array('dc=test,dc=com'));
+[3]
+$servers->setValue('login','bind_id','cn=admin,dc=test,dc=com');
+[4]
+$config->custom->appearance['hide_template_warning'] = true;
+```
+1. On remplace domain_name_or_IP_address par son nom de domaine ou son IP (dans le cadre de test laisser 127.0.0.1)
+>NOTE : Ici on met en place le meme nom de domaine que celui fournis lors de la configuration de slapd !!!
+2. Ici on ajoute notre domaine, par exemple si je suis dans le domaine ``wonderfull.example.com`` je vais mettre ``dc=wonderfull,dc=example,dc=com``
+3. Ici on ajoute la meme chose que l'on a mis au dessus SANS TOUCHER A ``cn=admin`` ainsi avec le domaine ``wonderfull.example.com`` on a  ``cn=admin,dc=wonderfull,dc=example,dc=com``
+4. On dit ici a phpldapadmin que l'on souhaite enlever les warning inutiles
+
+##Troubleshooting :
+1. Cas ou LDAP est en mode read-only :
+On édite ``/etc/phpldapadmin/templates/creation/posixAccount.xml`` et on commente ``readonly``
+```xml
+<attribute id="uidNumber">
+        <display>UID Number</display>
+        <icon>terminal.png</icon>
+        <order>6</order>
+        <page>1</page>
+<!--    <readonly>1</readonly> -->
+        <value>=php.GetNextNumber(/;uidNumber)</value>
+</attribute>
+```
+
