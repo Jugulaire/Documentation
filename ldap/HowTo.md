@@ -7,7 +7,7 @@ Cette installation se déroule en deux grandes étapes :
 
 ## Installation de OpenLDAP :
 
-Via les dépots Debian/Ubuntu :
+Via les dépôts Debian/Ubuntu :
 
 ```bash
 apt-get update && apt-get install slapd ldap-utils
@@ -22,9 +22,9 @@ dpkg-reconfigure slapd
 Un éditeur semi graphique apparait :
 1. Voulez-vous omettre la configuration d'OpenLDAP ? :  **NON**
 2. Nom de domaine : ** On met son nom de domaine**
-3. Nom d'entité (« organization ») : ** nom choisis pour la racine** 
-4. Mot de passe (user) : **On met celui que l'on a choisis plus tôt**
-5. Mot de passe administratuer : **Même chose**
+3. Nom d'entité (« organization ») : ** nom choisi pour la racine** 
+4. Mot de passe (user) : **On met celui que l'on a choisi plus tôt**
+5. Mot de passe administrateur : **Même chose**
 6. Module de base de données à utiliser : **HDB**
 7. Faut-il supprimer la base de données lors de la purge du paquet ? : **NON**
 8. Faut-il déplacer l'ancienne base de données ? : **OUI**
@@ -98,7 +98,7 @@ modifiersName: cn=admin,dc=nodomain
 modifyTimestamp: 20170420094245Z
 
 ```
-Cette commande va nous fournir des information primordiales sur la configuration que l'on a déja mise en place. 
+Cette commande va nous fournir des informations primordiales sur la configuration que l'on a déja mise en place. 
 éditons donc ces parametres :
 ``vi /etc/phpldapadmin/config.php``
 ```php
@@ -112,7 +112,7 @@ $servers->setValue('login','bind_id','cn=admin,dc=test,dc=com');
 $config->custom->appearance['hide_template_warning'] = true;
 ```
 1. On remplace domain_name_or_IP_address par son nom de domaine ou son IP (dans le cadre de test laisser 127.0.0.1)
->NOTE : Ici on met en place le meme nom de domaine que celui fournis lors de la configuration de slapd !!!
+>NOTE : Ici on met en place le meme nom de domaine que celui fourni lors de la configuration de slapd !!!
 2. Ici on ajoute notre domaine, par exemple si je suis dans le domaine ``wonderfull.example.com`` je vais mettre ``dc=wonderfull,dc=example,dc=com``
 3. Ici on ajoute la meme chose que l'on a mis au dessus SANS TOUCHER A ``cn=admin`` ainsi avec le domaine ``wonderfull.example.com`` on a  ``cn=admin,dc=wonderfull,dc=example,dc=com``
 4. On dit ici a phpldapadmin que l'on souhaite enlever les warning inutiles

@@ -29,7 +29,7 @@ apt install mysql
 mysql_install_db
 /usr/bin/mysql_secure_installation
 ```
-Place a la création des utilisateurs et des bases pour passbolt :
+Place à la création des utilisateurs et des bases pour passbolt :
 
 ```sql
 # Création de l'utilisateur pour passbolt
@@ -42,10 +42,10 @@ GRANT ALL PRIVILEGES ON test_passbolt. * TO 'passbolt'@'localhost';
 
 ### Mise en place de HTTPS (TLS)
 
-> Note : Ici on génére un certificat autosigné pour nos tests !
+> Note : Ici on génère un certificat auto-signé pour nos tests !
 > Dans un cadre de production on utilisera let's encrypt.
 
-#### Création d'un certificats (une commande) :
+#### Création d'un certificat (une commande) :
 
 ```bash
 #Création du certificat
@@ -100,7 +100,7 @@ Etapes :
 - Installation de l'APP
 - Création d'une clé GPG 
 - Export de la clé dans l'app
-- Parametrage 
+- Paramétrage 
 - Premier démarrage
 
 ### Installation de l'app :
@@ -113,15 +113,16 @@ chmod +w -R app/tmp
 chmod +w app/webroot/img/public
 ```
 
-### Création des clé GPG :
+### Création des clés GPG :
 
 ```bash
 su -s /bin/bash www-data
 gpg --gen-key
-#Prendre parametres par défaut SANS PASSPHRASE
+#Prendre paramètres par défaut SANS PASSPHRASE
 ```
+> Note : Mettre un email (même fictif) du même domaine que celui du serveur !!
 
-### Export des clé :
+### Export des clés :
 ```bash
 gpg --armor --export-secret-keys passbolt > /var/www/html/passbolt/app/Config/gpg/private.key
 gpg --armor --export passbolt > /var/www/html/passbolt/app/Config/gpg/public.key
@@ -165,7 +166,7 @@ $config = [
 				]
 		]
 ```
-En premier on modifie le chemin vers nos clé (éxporté précédement):
+En premier on modifie le chemin vers nos clé (exporté précédemment):
 ```php
 'home' => /var/www/html/passbolt/app/Config/gpg/
 ```
@@ -175,7 +176,19 @@ gpg --with-fingerprint app/Config/gpg/public.key
 ```
 ## Lacement de passbolt :
 
-On lance passbolt en tant que www-data pour être bien sur que les droits sont bie nconfiguré :
+On lance passbolt en tant que www-data pour être bien sûr que les droits sont bien configurés :
 ```bash
 su -s /bin/bash -c "app/Console/cake install --no-admin" www-data
+```
+## Création d'un administrateur :
+```bash
+su -s /bin/bash www-data
+cd 
+ html/passbolt/app/Console/cake passbolt register_user -u bob@passbolt.local -f bob -l paterson -r admin
+```
+## Création d'un utilisateur normal :
+```bash
+su -s /bin/bash www-data
+cd 
+ html/passbolt/app/Console/cake passbolt register_user -u bob@passbolt.local -f bob -l paterson -r user
 ```
