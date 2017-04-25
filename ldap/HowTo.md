@@ -139,7 +139,7 @@ Voici la configuration pour nginx dans le cas ou l'on souhaite utilise un sous d
 	listen [::]:443 ssl default_server;
 	 
 	ssl_certificate /etc/nginx/ssl/cert.pem;
-    ssl_certificate_key /etc/nginx/ssl/key.pem;
+	ssl_certificate_key /etc/nginx/ssl/key.pem;
 
 	root /var/www/html/;
 	server_name www.passbolt.local;
