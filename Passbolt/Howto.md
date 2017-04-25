@@ -68,7 +68,7 @@ ssl_certificate_key /etc/nginx/key.pem;
 
 ### Activation de pretty URL :
 
-Voici a quoi doit ressembler votre configuration :
+Voici a quoi doit ressembler votre configuration dans le cas ou l'on utilise un sous domaine :
 
 ```nginx
 server {
@@ -81,7 +81,7 @@ server {
         ssl_certificate_key /etc/nginx/ssl/key.pem;
 	root /var/www/html/passbolt/app/webroot/;
 	index index.php;
-	server_name passbolt.local;
+	server_name passwd.passbolt.local;
 
 	location / {
         try_files $uri $uri/ /index.php?$args;
@@ -94,6 +94,47 @@ server {
 
 ```
 
+Et ici dans le cas ou on utilise un sous dossier :
+
+```nginx
+#Passbolt
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+	listen 443 ssl default_server;
+	listen [::]:443 ssl default_server;
+	 
+	ssl_certificate /etc/nginx/ssl/cert.pem;
+    ssl_certificate_key /etc/nginx/ssl/key.pem;
+
+	allow all;
+	root /var/www/html/;
+	server_name passbolt.local;
+
+	location /passbolt {	
+		 if (-f $request_filename) {
+                    break;
+            }
+
+            if ($request_uri ~ /webroot/index.php) {
+                    break;
+            }
+
+            rewrite ^/passbolt$ /passbolt/ permanent;
+            rewrite ^/passbolt/app/webroot/(.*) /passbolt/app/webroot/index.php?url=$1 last;
+            rewrite ^/passbolt/(.*)$ /passbolt/app/webroot/$1 last;
+
+		location ~ \.php$ {
+		    include snippets/fastcgi-php.conf;
+		    fastcgi_pass unix:/var/run/php5-fpm.sock;
+			fastcgi_split_path_info ^(.+\.php)(/.+)$;
+ 		    fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+	    }
+
+	}
+}
+
+```
 ## Installation de passbolt :
 
 Etapes :
@@ -179,7 +220,7 @@ gpg --with-fingerprint app/Config/gpg/public.key
 On lance passbolt en tant que www-data pour être bien sûr que les droits sont bien configurés :
 ```bash
 su -s /bin/bash -c "app/Console/cake install --no-admin" www-data
-```
+`i``
 ## Création d'un administrateur :
 ```bash
 su -s /bin/bash www-data
@@ -187,7 +228,7 @@ cd
  html/passbolt/app/Console/cake passbolt register_user -u bob@passbolt.local -f bob -l paterson -r admin
 ```
 ## Création d'un utilisateur normal :
-```bash
+i```bash
 su -s /bin/bash www-data
 cd 
  html/passbolt/app/Console/cake passbolt register_user -u bob@passbolt.local -f bob -l paterson -r user
