@@ -117,7 +117,7 @@ $config->custom->appearance['hide_template_warning'] = true;
 3. Ici on ajoute la meme chose que l'on a mis au dessus SANS TOUCHER A ``cn=admin`` ainsi avec le domaine ``wonderfull.example.com`` on a  ``cn=admin,dc=wonderfull,dc=example,dc=com``
 4. On dit ici a phpldapadmin que l'on souhaite enlever les warning inutiles
 
-##Troubleshooting :
+## Troubleshooting :
 1. Cas ou LDAP est en mode read-only :
 On édite ``/etc/phpldapadmin/templates/creation/posixAccount.xml`` et on commente ``readonly``
 ```xml
