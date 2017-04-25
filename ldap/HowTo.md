@@ -130,4 +130,34 @@ On édite ``/etc/phpldapadmin/templates/creation/posixAccount.xml`` et on commen
         <value>=php.GetNextNumber(/;uidNumber)</value>
 </attribute>
 ```
+## Configuration nginx 
+Voici la configuration pour nginx dans le cas ou l'on souhaite utilise un sous dossier :
+```nginx
+	listen 80 default_server;
+	listen [::]:80 default_server;
+	listen 443 ssl default_server;
+	listen [::]:443 ssl default_server;
+	 
+	ssl_certificate /etc/nginx/ssl/cert.pem;
+    ssl_certificate_key /etc/nginx/ssl/key.pem;
 
+	root /var/www/html/;
+	server_name www.passbolt.local;
+
+	#PHPLDAPADMIN
+	location /phpldapadmin {
+		alias /usr/share/phpldapadmin/htdocs;
+		index index.php;
+	}
+	location ~ ^/phpldapadmin/.*\.php$ {
+            root /usr/share;
+            if ($request_filename !~* htdocs) {
+                    rewrite ^/phpldapadmin(/.*)?$ /phpldapadmin/htdocs$1;
+            }
+            fastcgi_pass unix:/var/run/php5-fpm.sock;
+            fastcgi_index index.php;
+            fastcgi_param SCRIPT_FILENAME $request_filename;
+            include fastcgi_params;
+    }
+
+```
