@@ -140,7 +140,6 @@ Voici la configuration pour nginx dans le cas ou l'on souhaite utilise un sous d
 	 
 	ssl_certificate /etc/nginx/ssl/cert.pem;
 	ssl_certificate_key /etc/nginx/ssl/key.pem;
-
 	root /var/www/html/;
 	server_name www.passbolt.local;
 
@@ -159,5 +158,30 @@ Voici la configuration pour nginx dans le cas ou l'on souhaite utilise un sous d
             fastcgi_param SCRIPT_FILENAME $request_filename;
             include fastcgi_params;
     }
+
+```
+Et ici dans le cas d'un sous domaine (plus simple)
+```nginx
+#phpldapadmin
+server {
+	listen 80;
+	listen [::]:80;
+	listen 443 ssl ;
+	listen [::]:443 ssl ;
+	 
+	ssl_certificate /etc/nginx/ssl/cert.pem;
+    ssl_certificate_key /etc/nginx/ssl/key.pem;
+	server_name ldap.passbolt.local;
+	root /usr/share/phpldapadmin/htdocs;
+	index index.php;
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		fastcgi_pass unix:/var/run/php5-fpm.sock;
+	}
+}
 
 ```
