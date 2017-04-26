@@ -70,3 +70,52 @@ nginx['listen_port'] = 8081
 nginx['listen_https'] = false
 ```
 > Note : Pas besoin de paramétrer le port HTTPS car on reste ici en local, on le mettra en place via notre proxy.
+
+## Paramétrage du proxy :
+
+> Note : Ici on va utiliser un proxy Nginx mais il est tout a fait possible d'utiliser Apache a la palce.
+> Rappel :
+> On souhaite obtenir un schéma de ce genre : 
+> ```
+> mondomaine.com : Site web
+> |---> modomaine.com/gitlab : Gitlab
+> |---> monodmaine.com/ldap : phpldapadmin
+> +---> etc...
+> ```
+
+Pour se faire :
+
+```nginx
+#VHOST for http 2 https redirect
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+	server_name www.passbolt.local;
+	return 301 https://$host$request_uri;
+}
+#HTTPS Vhost
+server {
+	listen 443 ssl default_server;
+	listen [::]:443 ssl default_server;
+	 
+	ssl_certificate /etc/nginx/ssl/cert.pem;
+    ssl_certificate_key /etc/nginx/ssl/key.pem;
+
+	root /var/www/html/;
+	server_name www.passbolt.local;
+	log_not_found on;
+#GITLAB
+	location /gitlab {
+		 proxy_pass http://localhost:8081;
+		 proxy_redirect off;
+ 		proxy_set_header Host $http_host;
+ 		proxy_set_header X-Real-IP $remote_addr;
+ 		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+ 		proxy_set_header X-Forwarded-Proto $scheme;
+ 		proxy_set_header X-Forwarded-Protocol $scheme;
+ 		proxy_set_header X-Url-Scheme $scheme;
+	}
+}
+
+```
+> Remarque : Ici on redirige automatiquement vers du HTTPS 
