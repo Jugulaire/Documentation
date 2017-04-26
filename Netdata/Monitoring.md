@@ -116,3 +116,30 @@ Testons maintenant que tout fonctionne :
 ```bash
 user@yourmachine ~ $ ssmtp "testing ssmtp setup" yourMail@gmail.com
 ```
+## Mise en place d'un proxy :
+
+> Note: ici on utilise Nginx mais on peut faire la même chose avec Apache.
+
+Voici une configuration permettant d'accéder a Netdata via un sous dossier (Mondomaine.com/netdata):
+
+```nginx
+#Monitoring
+	location /netdata {
+		rewrite /netdata(.*) /$1 break;
+		proxy_redirect off;
+		proxy_set_header Host $host;
+		proxy_set_header X-Forwarded-Host $host;
+		proxy_set_header X-Forwarded-Server $host;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_http_version 1.1;
+		proxy_pass_request_headers on;
+		proxy_set_header Connection "keep-alive";
+		proxy_store off;
+		proxy_pass http://172.18.0.1:19999;
+		gzip on;
+		gzip_proxied any;
+		gzip_types *;
+	}
+}
+
+```
