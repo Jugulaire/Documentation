@@ -84,7 +84,7 @@ server {
 	server_name passwd.passbolt.local;
 
 	location / {
-        try_files $uri $uri/ /index.php?$args;
+        	try_files $uri $uri/ /index.php?$args;
 	}
 	location ~ \.php$ {
 		include snippets/fastcgi-php.conf;
