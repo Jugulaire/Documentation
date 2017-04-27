@@ -110,23 +110,25 @@ server {
 	allow all;
 	root /var/www/html/;
 	server_name passbolt.local;
+	
 	#PASSBOLT
+	
 	location = /passbolt/manifest.php {
-    	rewrite ^/passbolt/manifest.php$ /passbolt/webroot/manifest.php last;
-    }
+    		rewrite ^/passbolt/manifest.php$ /passbolt/webroot/manifest.php last;
+    	}
 
 	location /passbolt {
-        rewrite ^/passbolt(.+)$ /passbolt/app/webroot$1 break;
+        	rewrite ^/passbolt(.+)$ /passbolt/app/webroot$1 break;
 		index index.php;
-        try_files $uri $uri/ /passbolt/app/webroot/index.php?$args;
+        	try_files $uri $uri/ /passbolt/app/webroot/index.php?$args;
  
   		location ~ \.php$ {
-     		try_files $uri =404;
-     		include fastcgi_params;
+     			try_files $uri =404;
+     			include fastcgi_params;
 			fastcgi_split_path_info ^(.+\.php)(/.+)$;
-     		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+     			fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 			fastcgi_pass unix:/var/run/php5-fpm.sock;
-     		fastcgi_index  index.php;
+     			fastcgi_index  index.php;
   		}	
 	}
 }
