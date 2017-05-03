@@ -106,3 +106,21 @@ LDAP users with access to your GitLab server (only showing the first 100 results
 
 Checking LDAP ... Finished
 ```
+
+## V - Les filtres :
+
+On arrive donc a se connecter sur gitlab avec LDAP mais encore faut-il pouvoir reguler l'acces a ce derniers.
+
+Pour se faire on va mettre en place une filtre.
+
+Dans notre cas on va simplement assigner une ou (Organisational unit) a nos utilisateur.
+
+Un utilisateur aillant le droit de se connecter sur gitlab auras donc ou=gitlab dans ses attributs.
+
+Pour mettre en place ce filtre on edite ``user_filter`` dans la configuration LDAP montrée plus haut. 
+```ruby
+ user_filter: '(ou=gitlab)'
+```
+On lance ensuite ``gitlab-ctl reconfigure``
+
+On peut eventuellement tester a nouveau avec ``gitlab-rake gitlab:ldap:check``.

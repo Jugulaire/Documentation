@@ -97,7 +97,6 @@ server {
 Et ici dans le cas ou on utilise un sous dossier :
 
 ```nginx
-#Passbolt
 server {
 	listen 80 default_server;
 	listen [::]:80 default_server;
@@ -162,6 +161,9 @@ gpg --gen-key
 #Prendre paramètres par défaut SANS PASSPHRASE
 ```
 > Note : Mettre un email (même fictif) du même domaine que celui du serveur !!
+> Ex je suis sur example.com => user@example.com
+
+Tips : Installer haveged pour générer plus d'entropy et accélérer la génération de la clé GPG.
 
 ### Export des clés :
 ```bash
@@ -187,6 +189,18 @@ public $default = array(
 	'database' => 'passbolt'
 );
 ```
+Configuration du core :
+
+```bash
+cp app/Config/core.php.default app/Config/core.php
+```
+
+```php
+Configure::write('App.fullBaseUrl','https://sous.domaine.tld')
+```
+> Note : ici on va spécifier le sous domaine sur lequelle on veut joindre passbolt.
+
+
 Configuration des clé GPG :
 ```bash
 cd /var/www/html
@@ -228,7 +242,7 @@ cd
  html/passbolt/app/Console/cake passbolt register_user -u bob@passbolt.local -f bob -l paterson -r admin
 ```
 ## Création d'un utilisateur normal :
-i```bash
+```bash
 su -s /bin/bash www-data
 cd 
  html/passbolt/app/Console/cake passbolt register_user -u bob@passbolt.local -f bob -l paterson -r user
