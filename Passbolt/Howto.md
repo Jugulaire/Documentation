@@ -84,7 +84,7 @@ server {
 	server_name passwd.passbolt.local;
 
 	location / {
-        try_files $uri $uri/ /index.php?$args;
+        	try_files $uri $uri/ /index.php?$args;
 	}
 	location ~ \.php$ {
 		include snippets/fastcgi-php.conf;
@@ -109,30 +109,28 @@ server {
 	allow all;
 	root /var/www/html/;
 	server_name passbolt.local;
+	
+	#PASSBOLT
+	
+	location = /passbolt/manifest.php {
+    		rewrite ^/passbolt/manifest.php$ /passbolt/webroot/manifest.php last;
+    	}
 
-	location /passbolt {	
-		 if (-f $request_filename) {
-                    break;
-            }
-
-            if ($request_uri ~ /webroot/index.php) {
-                    break;
-            }
-
-            rewrite ^/passbolt$ /passbolt/ permanent;
-            rewrite ^/passbolt/app/webroot/(.*) /passbolt/app/webroot/index.php?url=$1 last;
-            rewrite ^/passbolt/(.*)$ /passbolt/app/webroot/$1 last;
-
-		location ~ \.php$ {
-		    include snippets/fastcgi-php.conf;
-		    fastcgi_pass unix:/var/run/php5-fpm.sock;
+	location /passbolt {
+        	rewrite ^/passbolt(.+)$ /passbolt/app/webroot$1 break;
+		index index.php;
+        	try_files $uri $uri/ /passbolt/app/webroot/index.php?$args;
+ 
+  		location ~ \.php$ {
+     			try_files $uri =404;
+     			include fastcgi_params;
 			fastcgi_split_path_info ^(.+\.php)(/.+)$;
- 		    fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
-	    }
-
+     			fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+			fastcgi_pass unix:/var/run/php5-fpm.sock;
+     			fastcgi_index  index.php;
+  		}	
 	}
 }
-
 ```
 ## Installation de passbolt :
 
@@ -228,7 +226,7 @@ En premier on modifie le chemin vers nos clé (exporté précédemment):
 On va changer le fingerprint de notre clé pour correspondre a celui de notre clé:
 ```bash
 gpg --with-fingerprint app/Config/gpg/public.key
-```
+i```
 ## Lacement de passbolt :
 
 On lance passbolt en tant que www-data pour être bien sûr que les droits sont bien configurés :
