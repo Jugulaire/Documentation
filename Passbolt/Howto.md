@@ -16,7 +16,7 @@
 apt update && apt install nginx
 ```
 
-###Installation de PHP
+### Installation de PHP
 ```bash
 apt install php5-fpm php5-imagicki php5-gnupg php5-memcachedi php5-gd php5-mysql
 ```
