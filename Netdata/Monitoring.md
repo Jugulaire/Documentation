@@ -109,13 +109,43 @@ AuthMethod=LOGIN
 ```bash
  chown root:mail /etc/ssmtp/ssmtp.conf
  chmod 640 /etc/ssmtp/ssmtp.conf
- usermod -a -G mail <yourUserName>
+ usermod -a -G mail netdata
 ```
 Testons maintenant que tout fonctionne :
 
 ```bash
-user@yourmachine ~ $ ssmtp "testing ssmtp setup" yourMail@gmail.com
+user@yourmachine ~ $ echo "corp de mail" | mail -s "testing ssmtp setup" une.adresse@unDomaine.com
 ```
+Place au paramétrage de netdata :
+
+```bash 
+vi /etc/netdata/health_alarm_notify.conf
+```
+Rendez-vous ligne 91 (```:91``` dans vi)
+```ruby
+#------------------------------------------------------------------------------
+ # email global notification options
+ 
+ # multiple recipients can be given like this:
+ #              "admin1@example.com admin2@example.com ..."
+ 
+ # enable/disable sending emails
+ SEND_EMAIL="YES"
+  
+ # if a role recipient is not configured, an email will be send to:
+ DEFAULT_RECIPIENT_EMAIL="une.adresse@unDomaine.com"
+ # to receive only critical alarms, set it to "root|critical"
+
+```
+
+On test : 
+
+```bash
+sudo su -s /bin/bash netdata
+/usr/libexec/netdata/plugins.d/alarm-notify.sh test
+```
+
+
 ## Mise en place d'un proxy :
 
 > Note: ici on utilise Nginx mais on peut faire la même chose avec Apache.
