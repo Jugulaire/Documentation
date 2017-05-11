@@ -173,8 +173,8 @@ gpg --armor --export passbolt > /var/www/html/passbolt/app/Config/gpg/public.key
 Connexion a la base de données :
 ```bash
 cd /var/www/html
-vi app/Config/database.php
 cp app/Config/database.php.default app/Config/database.php
+vi app/Config/database.php
 ```
 On remplis les parametres :
 ```php
@@ -191,18 +191,20 @@ Configuration du core :
 
 ```bash
 cp app/Config/core.php.default app/Config/core.php
+vi app/Config/core.php
 ```
 
 ```php
 Configure::write('App.fullBaseUrl','https://sous.domaine.tld')
 ```
-> Note : ici on va spécifier le sous domaine sur lequelle on veut joindre passbolt.
+> Note : ici on va spécifier le sous domaine sur lequel on veut joindre passbolt.
 
 
 Configuration des clé GPG :
 ```bash
 cd /var/www/html
 cp app/Config/app.php.default app/Config/app.php
+vi app/Config/app.php
 ```
 ```php
 $config = [
@@ -226,22 +228,24 @@ En premier on modifie le chemin vers nos clé (exporté précédemment):
 On va changer le fingerprint de notre clé pour correspondre a celui de notre clé:
 ```bash
 gpg --with-fingerprint app/Config/gpg/public.key
-i```
+```
+
 ## Lacement de passbolt :
 
 On lance passbolt en tant que www-data pour être bien sûr que les droits sont bien configurés :
 ```bash
 su -s /bin/bash -c "app/Console/cake install --no-admin" www-data
-`i``
+```
+
 ## Création d'un administrateur :
 ```bash
 su -s /bin/bash www-data
-cd 
- html/passbolt/app/Console/cake passbolt register_user -u bob@passbolt.local -f bob -l paterson -r admin
+cd www/html/passbolt
+app/Console/cake passbolt register_user -u bob@passbolt.local -f bob -l paterson -r admin
 ```
 ## Création d'un utilisateur normal :
 ```bash
 su -s /bin/bash www-data
-cd 
- html/passbolt/app/Console/cake passbolt register_user -u bob@passbolt.local -f bob -l paterson -r user
+cd /var/html/passbolt/
+app/Console/cake passbolt register_user -u bob@passbolt.local -f bob -l paterson -r user
 ```
