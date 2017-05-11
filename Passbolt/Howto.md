@@ -71,25 +71,30 @@ ssl_certificate_key /etc/nginx/key.pem;
 Voici a quoi doit ressembler votre configuration dans le cas ou l'on utilise un sous domaine :
 
 ```nginx
+
+# Serveur PASSBOLT 
+
 server {
-	listen 80 default_server;
-	listen [::]:80 default_server;
-	listen 443 ssl default_server;
-	listen [::]:443 ssl default_server;
-
+    listen   443;
 	ssl_certificate /etc/nginx/ssl/cert.pem;
-        ssl_certificate_key /etc/nginx/ssl/key.pem;
-	root /var/www/html/passbolt/app/webroot/;
-	index index.php;
-	server_name passwd.passbolt.local;
+    ssl_certificate_key /etc/nginx/ssl/key.pem;
 
-	location / {
-        	try_files $uri $uri/ /index.php?$args;
-	}
-	location ~ \.php$ {
-		include snippets/fastcgi-php.conf;
-		fastcgi_pass unix:/var/run/php5-fpm.sock;
-	}
+    server_name pass.passbolt.local;
+
+    root   /var/www/html/passbolt/app/webroot/;
+    index  index.php;
+
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        include /etc/nginx/fastcgi_params;
+        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_index   index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
 }
 
 ```
