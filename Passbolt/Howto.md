@@ -99,7 +99,7 @@ server {
 
 ```
 
-Et ici dans le cas ou on utilise un sous dossier :
+Et ici dans le cas ou on utilise un sous dossier (ne marche pas pour le moment):
 
 ```nginx
 server {
@@ -235,6 +235,39 @@ On va changer le fingerprint de notre clé pour correspondre a celui de notre cl
 gpg --with-fingerprint app/Config/gpg/public.key
 ```
 
+## Email 
+```bash
+vi app/Config/email.php
+```
+
+On modifie le tableau default :
+
+```php
+    public $default = array(
+        'transport' => 'Smtp',
+        'from' => array('blabla@gmail.com' => 'Passbolt'),
+        'host' => 'smtp.gmail.com',
+        'port' => 587,
+        'timeout' => 300,
+        'username' => 'blabla@gmail.com',
+        'password' => 'passwd',
+        'tls' => true
+    );  
+
+```
+Maintenant on va ajouter une tache cron pour l'envoie des mails :
+
+```bash
+su -s /bin/bash www-data
+crontab -e 
+```
+On ajoute la ligne :
+
+```bash 
+* * * * * /var/www/html/passbolt/app/Console/cake EmailQueue.sender
+```
+
+
 ## Lacement de passbolt :
 
 On lance passbolt en tant que www-data pour être bien sûr que les droits sont bien configurés :
@@ -253,4 +286,18 @@ app/Console/cake passbolt register_user -u bob@passbolt.local -f bob -l paterson
 su -s /bin/bash www-data
 cd /var/html/passbolt/
 app/Console/cake passbolt register_user -u bob@passbolt.local -f bob -l paterson -r user
+```
+
+## Note debug :
+
+Pour tester les mails :
+
+```bash
+# Connexion en tant que www-data
+su -s /bin/bash www-data
+# Affichage des emails en attente d'envoie
+/var/www/html/passbolt/app/Console/cake EmailQueue.preview
+# Envoyer les emails de la liste d'attente 
+/var/www/html/passbolt/app/Console/cake EmailQueue.sender
+
 ```
