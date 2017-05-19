@@ -7,6 +7,7 @@ Pour se faire on utiliseras Gmail avec un compte spécialement créé a cet effe
 La documentation de gitlab detail beaucoup de mail providers. 
 [Lien](https://docs.gitlab.com/omnibus/settings/smtp.html
 
+``/etc/gitlab/gitlab.rb``
 ```ruby
 gitlab_rails['smtp_enable'] = true
 gitlab_rails['smtp_address'] = "smtp.gmail.com"
@@ -23,5 +24,5 @@ On va maintenant tester la configuration :
 
 ```bash
 gitlab-rails console 
-irb(main):01:0> Notify.test_mail('dest_email','Sujet du message', 'Corp du message').deliver_now
+irb(main):01:0> Notify.test_email('destination_email@address.com', 'Message Subject', 'Message Body').deliver_now
 ```
