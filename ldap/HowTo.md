@@ -130,6 +130,7 @@ On édite ``/etc/phpldapadmin/templates/creation/posixAccount.xml`` et on commen
         <value>=php.GetNextNumber(/;uidNumber)</value>
 </attribute>
 ```
+
 ## Configuration nginx 
 Voici la configuration pour nginx dans le cas ou l'on souhaite utilise un sous dossier :
 ```nginx
