@@ -137,6 +137,17 @@ Rendez-vous ligne 91 (```:91``` dans vi)
  # to receive only critical alarms, set it to "root|critical"
 
 ```
+On modifie Revaliases :
+
+```ruby
+# /etc/ssmtp/revaliases
+
+# Format:   local_account:outgoing_address:mailhub
+# Example: root:your_login@your.domain:mailhub.your.domain[:port]
+# where [:port] is an optional port number that defaults to 25.
+netdata:contact@smartfizz.fr:mail.bla.net:587
+~                                                 
+```
 
 On test : 
 
